@@ -35,7 +35,7 @@ export default class MainScene extends Phaser.Scene {
   }
 }
 
-const config = {
+const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   backgroundColor: '#125555',
   width: 800,
@@ -43,11 +43,11 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-        gravity: {y: 500},
-        debug: false
-    }
+      gravity: { y: 500 },
+      debug: false,
+    },
   },
-  scene: MainScene
+  scene: MainScene,
 };
 
 const game = new Phaser.Game(config);
