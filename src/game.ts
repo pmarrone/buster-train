@@ -1,4 +1,5 @@
 import 'phaser';
+import { setupMap } from './map';
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -17,17 +18,17 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    const map = this.make.tilemap({ key: 'map' });
-    const groundTiles = map.addTilesetImage('tiles');
-    const groundLayer = map.createDynamicLayer('World', groundTiles, 0, 0);
-
-    groundLayer.setCollisionByExclusion([-1]);
+    const { groundLayer } = setupMap(this);
 
     this.physics.world.bounds.width = groundLayer.width;
     this.physics.world.bounds.height = groundLayer.height;
-    this.load.atlasXML('sprites', 'assets/spritesheet_complete.png', 'assets/spritesheet_complete.xml');
+    this.load.atlasXML(
+      'sprites',
+      'assets/spritesheet_complete.png',
+      'assets/spritesheet_complete.xml'
+    );
 
-    var player = this.physics.add.sprite(200, 30, 'player'); 
+    var player = this.physics.add.sprite(200, 30, 'player');
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
 
