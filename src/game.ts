@@ -1,6 +1,11 @@
 import 'phaser';
 
 export default class MainScene extends Phaser.Scene {
+  map: Phaser.Tilemaps.Tilemap;
+  player: Phaser.Physics.Arcade.Sprite;
+  groundTiles: Phaser.Tilemaps.Tileset;
+  groundLayer: Phaser.Tilemaps.DynamicTilemapLayer;
+
   constructor() {
     super('mainScene');
   }
@@ -17,21 +22,54 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    const map = this.make.tilemap({ key: 'map' });
-    const groundTiles = map.addTilesetImage('tiles');
-    const groundLayer = map.createDynamicLayer('World', groundTiles, 0, 0);
+    this.createMap();
+    this.configurePlayer();
+    this.configurePhysics();
+    this.configureCamera();
+  }
 
-    groundLayer.setCollisionByExclusion([-1]);
+  private createMap() {
+    this.map = this.make.tilemap({ key: 'map' });
+    this.groundTiles = this.map.addTilesetImage('tiles');
+    this.groundLayer = this.map.createDynamicLayer(
+      'World',
+      this.groundTiles,
+      0,
+      0
+    );
+    this.groundLayer.setCollisionByExclusion([-1]);
+    this.physics.world.bounds.width = this.groundLayer.width;
+    this.physics.world.bounds.height = this.groundLayer.height;
+    this.load.atlasXML(
+      'sprites',
+      'assets/spritesheet_complete.png',
+      'assets/spritesheet_complete.xml'
+    );
+  }
 
-    this.physics.world.bounds.width = groundLayer.width;
-    this.physics.world.bounds.height = groundLayer.height;
-    this.load.atlasXML('sprites', 'assets/spritesheet_complete.png', 'assets/spritesheet_complete.xml');
+  private configurePlayer() {
+    this.player = this.physics.add.sprite(200, 30, 'player');
+    this.player.setBounce(0.2);
+    this.player.setCollideWorldBounds(true);
+  }
 
-    var player = this.physics.add.sprite(200, 30, 'player'); 
-    player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
+  private configurePhysics() {
+    this.physics.add.collider(this.groundLayer, this.player);
+  }
 
-    this.physics.add.collider(groundLayer, player);
+  private configureCamera() {
+    // set bounds so the camera won't go outside the game world
+    this.cameras.main.setBounds(
+      0,
+      0,
+      this.map.widthInPixels,
+      this.map.heightInPixels
+    );
+    // make the camera follow the player
+    this.cameras.main.startFollow(this.player);
+
+    // set background color, so the sky is not black
+    this.cameras.main.setBackgroundColor('#ccccff');
   }
 }
 
