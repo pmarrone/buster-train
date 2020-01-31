@@ -6,11 +6,20 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
-
+    this.load.atlasXML('cars', 'assets/cars.png', 'assets/cars.xml');
   }
 
   create() {
+    var atlasTexture = this.textures.get('cars');
+    var frames = atlasTexture.getFrameNames();
 
+    console.log(frames);
+    for (var i = 0; i < frames.length; i++) {
+      var x = Phaser.Math.Between(0, 800);
+      var y = Phaser.Math.Between(0, 600);
+
+      this.add.image(x, y, 'cars', frames[i]);
+    }
   }
 }
 
