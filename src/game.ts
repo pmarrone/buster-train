@@ -1,10 +1,13 @@
 import 'phaser';
+import MainCamera from './Camera';
+import MainPlayer from './player';
 
 export default class MainScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
   player: Phaser.Physics.Arcade.Sprite;
   groundTiles: Phaser.Tilemaps.Tileset;
   groundLayer: Phaser.Tilemaps.DynamicTilemapLayer;
+  // keyboard: Phaser.Types.Input.Keyboard;
 
   constructor() {
     super('mainScene');
@@ -25,6 +28,7 @@ export default class MainScene extends Phaser.Scene {
     this.createMap();
     this.configurePlayer();
     this.configurePhysics();
+    // this.configureMovement();
     this.configureCamera();
   }
 
@@ -48,9 +52,13 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private configurePlayer() {
-    this.player = this.physics.add.sprite(200, 30, 'player');
-    this.player.setBounce(0.2);
-    this.player.setCollideWorldBounds(true);
+    this.player = new MainPlayer({
+      scene: this,
+      x: 200,
+      y: 30,
+      texture: 'player',
+    });
+
   }
 
   private configurePhysics() {
@@ -58,18 +66,15 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private configureCamera() {
-    // set bounds so the camera won't go outside the game world
-    this.cameras.main.setBounds(
+    const camera = new MainCamera(
       0,
       0,
       this.map.widthInPixels,
       this.map.heightInPixels
     );
-    // make the camera follow the player
-    this.cameras.main.startFollow(this.player);
-
-    // set background color, so the sky is not black
-    this.cameras.main.setBackgroundColor('#ccccff');
+    camera.startFollow(this.player);
+    camera.setBackgroundColor('#ccccff');
+    this.cameras.addExisting(camera);
   }
 }
 
