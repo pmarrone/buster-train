@@ -14,7 +14,7 @@ class CameraManager {
 
   configureMainCamera() {
     const { cameras, map, mainPlayer } = this.scene;
-    cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    // cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     // make the camera follow the player
     cameras.main.startFollow(mainPlayer);
 

@@ -13,24 +13,23 @@ class MainPlayer {
     this.player.setScale(0.7, 0.7);
   }
 
-  getKeyMapping(pressedKeys: any) : any {
+  getKeyMapping(pressedKeys: any): any {
     return {
       left: pressedKeys.left.isDown,
       right: pressedKeys.right.isDown,
       down: pressedKeys.down.isDown,
       jump: pressedKeys.jump.isDown,
-      action: pressedKeys.action.isDown
+      action: pressedKeys.action.isDown,
     };
   }
 
-  update(keys, time, delta) { 
-
+  update(keys, time, delta) {
     var input = this.getKeyMapping(keys);
 
     this.jumpingTimer -= delta;
 
     if (input.left) {
-      this.player.anims.play('walk', true)
+      this.player.anims.play('walk', true);
       this.player.flipX = true;
 
       if (this.player.body.velocity.y === 0) {
@@ -39,7 +38,7 @@ class MainPlayer {
         this.run(-this.acceleration / 3);
       }
     } else if (input.right) {
-      this.player.anims.play('walk', true)
+      this.player.anims.play('walk', true);
       this.player.flipX = false;
 
       if (this.player.body.velocity.y === 0) {
@@ -47,13 +46,18 @@ class MainPlayer {
       } else {
         this.run(this.acceleration / 3);
       }
-    } else if (this.player.body.blocked.down) {
+    } else if (
+      this.player.body.blocked.down ||
+      this.player.body.touching.down
+    ) {
       if (Math.abs(this.player.body.velocity.x) < 20) {
         this.player.anims.play('idle', true);
         this.player.setVelocityX(0);
         this.run(0);
       } else {
-        this.run(((this.player.body.velocity.x > 0 ? -1 : 1) * this.acceleration) / 2);
+        this.run(
+          ((this.player.body.velocity.x > 0 ? -1 : 1) * this.acceleration) / 2
+        );
       }
     } else if (!this.player.body.blocked.down) {
       this.run(0);
@@ -64,19 +68,29 @@ class MainPlayer {
     } else if (!input.jump) {
       this.jumpingTimer = -1;
 
-      if (this.player.body.blocked.down) {
+      if (this.player.body.blocked.down || this.player.body.touching.down) {
+        console.log('Not jumpin');
         this.isJumping = false;
       }
     }
-
   }
 
   jump() {
-    if (!this.player.body.blocked.down && !this.isJumping) { return; }
+    if (
+      !this.player.body.blocked.down &&
+      !this.player.body.touching.down &&
+      !this.isJumping
+    ) {
+      return;
+    }
 
-    if (this.player.body.velocity.y < 0 || this.player.body.blocked.down) { this.player.setVelocityY(-this.jumpHeight); }
+    if (this.player.body.velocity.y < 0 || this.player.body.blocked.down) {
+      this.player.setVelocityY(-this.jumpHeight);
+    }
 
-    if (!this.isJumping) { this.jumpingTimer = this.jumpungTimerReset; }
+    if (!this.isJumping) {
+      this.jumpingTimer = this.jumpungTimerReset;
+    }
 
     this.isJumping = true;
   }
@@ -86,12 +100,11 @@ class MainPlayer {
   }
 
   collectItem(item: Phaser.GameObjects.Image) {
-    const playerCenterX = this.player.x + (this.player.width / 2);
-    const playerCenterY = this.player.y + (this.player.height / 2);
+    const playerCenterX = this.player.x + this.player.width / 2;
+    const playerCenterY = this.player.y + this.player.height / 2;
     item.setPosition(playerCenterX, playerCenterY);
     return false;
   }
-  
 }
 
 export default MainPlayer;

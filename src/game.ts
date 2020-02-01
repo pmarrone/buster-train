@@ -1,10 +1,12 @@
 import 'phaser';
 import CameraManager from './cameraManager';
 import MainPlayer from './player';
+import { createLocomotive, dragCallback } from './locomotive';
 
 export default class MainScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
   player: MainPlayer;
+  locomotive: Phaser.Physics.Arcade.Group;
   mainPlayer: Phaser.Physics.Arcade.Sprite;
   groundTiles: Phaser.Tilemaps.Tileset;
   groundLayer: Phaser.Tilemaps.DynamicTilemapLayer;
@@ -66,8 +68,6 @@ export default class MainScene extends Phaser.Scene {
       0
     );
     this.groundLayer.setCollisionByExclusion([-1]);
-    this.physics.world.bounds.width = this.groundLayer.width;
-    this.physics.world.bounds.height = this.groundLayer.height;
   }
 
   private configurePlayer() {
@@ -98,10 +98,16 @@ export default class MainScene extends Phaser.Scene {
     });
 
     this.player = new MainPlayer(this.mainPlayer);
+    this.locomotive = createLocomotive(this);
   }
 
   private configurePhysics() {
     this.physics.add.collider(this.groundLayer, this.mainPlayer);
+    const locomotiveCollider = this.physics.add.collider(
+      this.locomotive,
+      this.mainPlayer
+    );
+    locomotiveCollider.collideCallback = dragCallback;
   }
 
   private configureCamera() {
@@ -111,6 +117,7 @@ export default class MainScene extends Phaser.Scene {
 
   update(time, delta) {
     this.player.update(this.keys, time, delta);
+    this.groundLayer.update(this.cameras.main);
   }
 }
 
