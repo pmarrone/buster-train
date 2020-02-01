@@ -104,21 +104,6 @@ class MainPlayer {
       }
     }
 
-    // this.scene.physics.overlap(
-    //   this.player,
-    //   this.saw,
-    //   this.setColliding,
-    //   null,
-    //   this
-    // );
-    // this.scene.physics.overlap(
-    //   this.player,
-    //   this.tool,
-    //   this.setColliding,
-    //   null,
-    //   this
-    // );
-
     if (input.action && this.holdingTool) {
       this.grabbing.setX(this.player.x);
       this.grabbing.setY(this.player.y);
