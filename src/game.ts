@@ -4,7 +4,7 @@ import MainPlayer from './player';
 
 export default class MainScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
-  //mainPlayer: Phaser.GameObjects.Sprite;
+  player: MainPlayer;
   mainPlayer: Phaser.Physics.Arcade.Sprite;
   groundTiles: Phaser.Tilemaps.Tileset;
   groundLayer: Phaser.Tilemaps.DynamicTilemapLayer;
@@ -27,8 +27,7 @@ export default class MainScene extends Phaser.Scene {
   create() {
     this.keys = {
       jump: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
-      jump2: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X),
-      fire: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z),
+      action: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z),
       left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
       right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
       down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
@@ -37,7 +36,6 @@ export default class MainScene extends Phaser.Scene {
     this.createMap();
     this.configurePlayer();
     this.configurePhysics();
-    //this.configureMovement();
     this.configureCamera();
   }
 
@@ -64,38 +62,12 @@ export default class MainScene extends Phaser.Scene {
     this.mainPlayer = this.physics.add.sprite(200, 20, 'player');
     this.mainPlayer.setBounce(0.2);
     this.mainPlayer.setCollideWorldBounds(true);
-     /*new MainPlayer({
-      scene: this,
-      x: 200,
-      y: 20,
-      texture: 'player'
-    });*/
+    this.player = new MainPlayer(this.mainPlayer);
   }
 
   private configurePhysics() {
     this.physics.add.collider(this.groundLayer, this.mainPlayer);
   }
-
-  /*private configureMovement() {
-    const cursors = this.input.keyboard.createCursorKeys();
-
-    if (cursors.left.isDown) {
-      this.player.setVelocityX(-160);
-      this.player.anims.play('left', true);
-    } else if (cursors.right.isDown) {
-      this.player.setVelocityX(160);
-
-      this.player.anims.play('right', true);
-    } else {
-      this.player.setVelocityX(0);
-
-      this.player.anims.play('turn');
-    }
-
-    if (cursors.up.isDown && this.player.body.touching.down) {
-      this.player.setVelocityY(-330);
-    }
-  }*/
 
   private configureCamera() {
     const camera = new MainCamera(
@@ -109,20 +81,8 @@ export default class MainScene extends Phaser.Scene {
     this.cameras.addExisting(camera);
   }
 
-  update(time, delta) { 
-    //this.mainPlayer.update(this.keys, time, delta);
-
-    if (this.keys.left.isDown) {
-      this.mainPlayer.setVelocityX(-100);
-    }
-    
-    if (this.keys.right.isDown) {
-      this.mainPlayer.setVelocityX(100);
-    }
-
-    /* else {
-      this.mainPlayer.setVelocityX(0);
-    }*/
+  update(time, delta) {
+    this.player.update(this.keys, time, delta);
   }
 
 }

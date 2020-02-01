@@ -1,18 +1,10 @@
 import 'phaser';
 
-interface IMainPlayerOptions {
-  scene: Phaser.Scene;
-  x: number;
-  y: number;
-  texture: string;
-}
+class MainPlayer {
+  player: Phaser.Physics.Arcade.Sprite;
 
-class MainPlayer extends Phaser.GameObjects.Sprite {
-  constructor(options: IMainPlayerOptions) {
-    super(options.scene, options.x, options.y, options.texture);
-
-    options.scene.physics.world.enable(this);
-    options.scene.add.existing(this);
+  constructor(player: Phaser.Physics.Arcade.Sprite) {
+    this.player = player;
   }
 
   update(keys, time, delta) { 
@@ -21,13 +13,18 @@ class MainPlayer extends Phaser.GameObjects.Sprite {
         left: keys.left.isDown,
         right: keys.right.isDown,
         down: keys.down.isDown,
-        jump: keys.jump.isDown || keys.jump2.isDown,
-        fire: keys.fire.isDown
-      };
+        jump: keys.jump.isDown,
+        action: keys.action.isDown
+    };
 
     if (input.left) {
-        
+      this.player.setVelocityX(-100);
     }
+    
+    if (input.right) {
+      this.player.setVelocityX(100);
+    }
+
   }
 }
 
