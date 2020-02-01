@@ -10,6 +10,7 @@ class MainPlayer {
 
   constructor(player: Phaser.Physics.Arcade.Sprite) {
     this.player = player;
+    this.player.setScale(0.7, 0.7);
   }
 
   getKeyMapping(pressedKeys: any) : any {
