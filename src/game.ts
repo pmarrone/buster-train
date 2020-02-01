@@ -9,6 +9,7 @@ export default class MainScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
   player: MainPlayer;
   locoTimer: LocomotiveTimer;
+  cameraManager: CameraManager;
   locomotive: Phaser.Physics.Arcade.Group;
   mainPlayer: Phaser.Physics.Arcade.Sprite;
   groundTiles: Phaser.Tilemaps.Tileset;
@@ -157,14 +158,13 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private configureCamera() {
-    const cameraManager = new CameraManager(this);
-    cameraManager.init();
+    this.cameraManager = new CameraManager(this);
+    this.cameraManager.init();
   }
 
   update(time, delta) {
     this.player.update(this.keys, time, delta);
-
-    //this.physics.moveToObject(this.coin, this.mainPlayer);
+    this.cameraManager.calculateZoomBetween(this.mainPlayer, this.locomotive);
   }
 }
 
