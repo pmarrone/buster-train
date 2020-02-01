@@ -18,7 +18,6 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 70,
       frameHeight: 70,
     });
-    this.cameras.main
     this.load.image('coin', 'assets/coinGold.png');
     this.load.atlas('player', 'assets/player.png', 'assets/player.json');
   }
@@ -29,24 +28,6 @@ export default class MainScene extends Phaser.Scene {
     this.configurePhysics();
     this.configureMovement();
     this.configureCamera();
-  }
-
-  private configureMovement() {
-    // const cursors = this.input.keyboard.createCursorKeys();
-
-    // if (cursors.left.isDown) {
-    //   // if the left arrow key is down
-    //   this.player.body.setVelocityX(-200); // move left
-    // } else if (cursors.right.isDown) {
-    //   // if the right arrow key is down
-    //   this.player.body.setVelocityX(200); // move right
-    // }
-    // if (
-    //   (cursors.space.isDown || cursors.up.isDown) &&
-    //   this.player.body.onFloor()
-    // ) {
-    //   this.player.body.setVelocityY(-500); // jump up
-    // }
   }
 
   private createMap() {
@@ -76,6 +57,27 @@ export default class MainScene extends Phaser.Scene {
 
   private configurePhysics() {
     this.physics.add.collider(this.groundLayer, this.player);
+  }
+
+  private configureMovement() {
+    const cursors = this.input.keyboard.createCursorKeys();
+
+    if (cursors.left.isDown) {
+      this.player.setVelocityX(-160);
+      this.player.anims.play('left', true);
+    } else if (cursors.right.isDown) {
+      this.player.setVelocityX(160);
+
+      this.player.anims.play('right', true);
+    } else {
+      this.player.setVelocityX(0);
+
+      this.player.anims.play('turn');
+    }
+
+    if (cursors.up.isDown && this.player.body.touching.down) {
+      this.player.setVelocityY(-330);
+    }
   }
 
   private configureCamera() {
