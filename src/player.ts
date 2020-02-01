@@ -10,9 +10,9 @@ class MainPlayer {
   scene: Phaser.Scene;
   acceleration: integer = 2400;
   isJumping: boolean;
-  jumpungTimerReset: integer = 300;
+  jumpungTimerReset: integer = 20;
   jumpingTimer: integer = 0;
-  jumpHeight: integer = 400;
+  jumpHeight: integer = 700;
   holdingTool: boolean = false;
 
   collider: any;
@@ -86,13 +86,12 @@ class MainPlayer {
       this.run(0);
     }
 
-    if (input.jump && (!this.isJumping || this.jumpingTimer > 0)) {
+    if (input.jump && !this.isJumping) {
       this.jump();
     } else if (!input.jump) {
       this.jumpingTimer = -1;
 
       if (this.player.body.blocked.down || this.player.body.touching.down) {
-        console.log('Not jumpin');
         this.isJumping = false;
       }
     }
@@ -153,6 +152,10 @@ class MainPlayer {
     if (!this.isJumping) {
       this.jumpingTimer = this.jumpungTimerReset;
     }
+
+    const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
+    playerBody.velocity.x =
+      playerBody.velocity.x + (playerBody.prev.x - playerBody.x) * 2;
 
     this.isJumping = true;
   }

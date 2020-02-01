@@ -12,7 +12,10 @@ export const dragCallback: ArcadePhysicsCallback = (dragged, drags) => {
     return;
   }
 
-  if (draggedBody.touching.down && draggedBody.bottom - dragsbody.top === 0) {
+  if (
+    draggedBody.touching.down &&
+    Math.abs(draggedBody.bottom - dragsbody.top) < 2
+  ) {
     draggedBody.x += dragsbody.deltaXFinal() * 2; // Magic number 2!;
   }
 };

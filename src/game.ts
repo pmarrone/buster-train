@@ -64,7 +64,7 @@ export default class MainScene extends Phaser.Scene {
 
   private configurePlayer() {
     this.mainPlayer = this.physics.add.sprite(300, 20, 'player');
-    this.mainPlayer.setBounce(0.2);
+    this.mainPlayer.setBounce(0.1);
     this.mainPlayer.setCollideWorldBounds(true);
     this.mainPlayer.body.setSize(
       this.mainPlayer.width,
@@ -134,7 +134,7 @@ const config: Phaser.Types.Core.GameConfig = {
   physics: {
     default: 'arcade',
     arcade: {
-      gravity: { y: 500 },
+      gravity: { y: 800 },
       debug: false,
     },
   },
