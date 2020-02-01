@@ -4,9 +4,11 @@ import MainPlayer from './player';
 
 export default class MainScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
-  mainPlayer: Phaser.GameObjects.Sprite;
+  //mainPlayer: Phaser.GameObjects.Sprite;
+  mainPlayer: Phaser.Physics.Arcade.Sprite;
   groundTiles: Phaser.Tilemaps.Tileset;
   groundLayer: Phaser.Tilemaps.DynamicTilemapLayer;
+  keys: any;
 
   constructor() {
     super('mainScene');
@@ -24,6 +26,15 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
+    this.keys = {
+      jump: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
+      jump2: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X),
+      fire: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z),
+      left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
+      right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
+      down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
+    };
+
     this.createMap();
     this.configurePlayer();
     this.configurePhysics();
@@ -69,12 +80,15 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private configurePlayer() {
-    this.mainPlayer = new MainPlayer({
+    this.mainPlayer = this.physics.add.sprite(200, 20, 'player');
+    this.mainPlayer.setBounce(0.2);
+    this.mainPlayer.setCollideWorldBounds(true);
+     /*new MainPlayer({
       scene: this,
       x: 200,
       y: 20,
       texture: 'player'
-    });
+    });*/
   }
 
   private configurePhysics() {
@@ -92,6 +106,23 @@ export default class MainScene extends Phaser.Scene {
     camera.setBackgroundColor('#ccccff');
     this.cameras.addExisting(camera);
   }
+
+  update(time, delta) { 
+    //this.mainPlayer.update(this.keys, time, delta);
+
+    if (this.keys.left.isDown) {
+      this.mainPlayer.setVelocityX(-100);
+    }
+    
+    if (this.keys.right.isDown) {
+      this.mainPlayer.setVelocityX(100);
+    }
+
+    /* else {
+      this.mainPlayer.setVelocityX(0);
+    }*/
+  }
+
 }
 
 const config: Phaser.Types.Core.GameConfig = {

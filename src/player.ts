@@ -14,6 +14,21 @@ class MainPlayer extends Phaser.GameObjects.Sprite {
     options.scene.physics.world.enable(this);
     options.scene.add.existing(this);
   }
+
+  update(keys, time, delta) { 
+
+    var input = {
+        left: keys.left.isDown,
+        right: keys.right.isDown,
+        down: keys.down.isDown,
+        jump: keys.jump.isDown || keys.jump2.isDown,
+        fire: keys.fire.isDown
+      };
+
+    if (input.left) {
+        
+    }
+  }
 }
 
 export default MainPlayer;
