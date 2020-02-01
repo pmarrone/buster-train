@@ -2,15 +2,20 @@ import 'phaser';
 
 class MainPlayer {
   player: Phaser.Physics.Arcade.Sprite;
+  coin: Phaser.Physics.Arcade.Sprite;
   acceleration: integer = 2400;
   isJumping: boolean;
   jumpungTimerReset: integer = 300;
   jumpingTimer: integer = 0;
   jumpHeight: integer = 400;
+  holdingTool: boolean = false;
 
-  constructor(player: Phaser.Physics.Arcade.Sprite) {
+  constructor(player: Phaser.Physics.Arcade.Sprite, 
+              coin: Phaser.Physics.Arcade.Sprite) {
     this.player = player;
     this.player.setScale(0.7, 0.7);
+
+    this.coin = coin;
   }
 
   getKeyMapping(pressedKeys: any) : any {
@@ -69,6 +74,10 @@ class MainPlayer {
       }
     }
 
+    if (input.action) {
+      this.coin.setX(this.player.x);
+      this.coin.setY(this.player.y);
+    }
   }
 
   jump() {
@@ -83,13 +92,6 @@ class MainPlayer {
 
   run(vel) {
     this.player.setAccelerationX(vel);
-  }
-
-  collectItem(item: Phaser.GameObjects.Image) {
-    const playerCenterX = this.player.x + (this.player.width / 2);
-    const playerCenterY = this.player.y + (this.player.height / 2);
-    item.setPosition(playerCenterX, playerCenterY);
-    return false;
   }
   
 }
