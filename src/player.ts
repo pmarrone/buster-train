@@ -7,11 +7,12 @@ interface IMainPlayerOptions {
   texture: string;
 }
 
-class MainPlayer extends Phaser.Physics.Arcade.Sprite {
+class MainPlayer extends Phaser.GameObjects.Sprite {
   constructor(options: IMainPlayerOptions) {
     super(options.scene, options.x, options.y, options.texture);
-    this.setBounce(0.2);
-    this.setCollideWorldBounds(true);
+
+    options.scene.physics.world.enable(this);
+    options.scene.add.existing(this);
   }
 }
 

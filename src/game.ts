@@ -4,7 +4,7 @@ import MainPlayer from './player';
 
 export default class MainScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
-  player: Phaser.Physics.Arcade.Sprite;
+  mainPlayer: Phaser.GameObjects.Sprite;
   groundTiles: Phaser.Tilemaps.Tileset;
   groundLayer: Phaser.Tilemaps.DynamicTilemapLayer;
 
@@ -69,13 +69,16 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private configurePlayer() {
-    this.player = this.physics.add.sprite(200, 200, 'player');
-    this.player.setBounce(0.2);
-    this.player.setCollideWorldBounds(true);
+    this.mainPlayer = new MainPlayer({
+      scene: this,
+      x: 200,
+      y: 20,
+      texture: 'player'
+    });
   }
 
   private configurePhysics() {
-    this.physics.add.collider(this.groundLayer, this.player);
+    this.physics.add.collider(this.groundLayer, this.mainPlayer);
   }
 
   private configureCamera() {
@@ -85,7 +88,7 @@ export default class MainScene extends Phaser.Scene {
       this.map.widthInPixels,
       this.map.heightInPixels
     );
-    camera.startFollow(this.player);
+    camera.startFollow(this.mainPlayer);
     camera.setBackgroundColor('#ccccff');
     this.cameras.addExisting(camera);
   }
