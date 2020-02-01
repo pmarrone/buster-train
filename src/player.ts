@@ -122,6 +122,10 @@ class MainPlayer {
     if (input.action && this.holdingTool) {
       this.grabbing.setX(this.player.x);
       this.grabbing.setY(this.player.y);
+      this.grabbing.setVelocity(
+        this.player.body.velocity.x * 0.6,
+        this.player.body.velocity.y + 20
+      );
     } else if (input.action && this.isColliding) {
       this.grabbing = this.collider;
       this.holdingTool = true;

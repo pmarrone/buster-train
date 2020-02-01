@@ -111,11 +111,12 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.collider(this.groundLayer, tools);
     const locomotiveCollider = this.physics.add.collider(
       this.locomotive,
-      this.mainPlayer
+      this.mainPlayer,
+      dragCallback
     );
 
-    this.physics.add.collider(this.locomotive, tools);
-    locomotiveCollider.collideCallback = dragCallback;
+    this.physics.add.collider(this.locomotive, tools, dragCallback);
+    // locomotiveCollider.collideCallback = dragCallback;
   }
 
   private configureCamera() {
