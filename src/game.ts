@@ -1,12 +1,14 @@
 import 'phaser';
 import CameraManager from './cameraManager';
 import MainPlayer from './player';
+import LocomotiveTimer from './locomotiveTimer';
 import { createLocomotive, dragCallback } from './locomotive';
 import { IObstacle, Obstacle } from './Obstacle';
 
 export default class MainScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
   player: MainPlayer;
+  locoTimer: LocomotiveTimer;
   locomotive: Phaser.Physics.Arcade.Group;
   mainPlayer: Phaser.Physics.Arcade.Sprite;
   groundTiles: Phaser.Tilemaps.Tileset;
@@ -29,6 +31,8 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('coin', 'assets/coinGold.png');
     this.load.image('saw', 'assets/saw.png');
     this.load.image('tool', 'assets/tool.png');
+    this.load.image('timerContainer', 'assets/energycontainer.png');
+    this.load.image('timeBar', 'assets/energybar.png');
     this.load.atlas('player', 'assets/player.png', 'assets/player.json');
   }
 
@@ -73,6 +77,11 @@ export default class MainScene extends Phaser.Scene {
       const obstacle = obstacles[i];
       obstacle.addCollision(this.groundLayer);
     }
+    this.createTimer();
+  }
+
+  private createTimer() {
+    this.locoTimer = new LocomotiveTimer(this);
   }
 
   private createMap() {
@@ -120,7 +129,8 @@ export default class MainScene extends Phaser.Scene {
     this.saw = this.physics.add
       .image(900, 100, 'saw')
       .setName('saw')
-      .setDragX(100);
+      .setDragX(100)
+      .setScale(0.5, 0.5);
     this.tool = this.physics.add.image(700, 100, 'tool').setDragX(100);
 
     this.player = new MainPlayer(
