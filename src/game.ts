@@ -1,5 +1,5 @@
 import 'phaser';
-import MainCamera from './Camera';
+import MainCamera from './camera';
 import MainPlayer from './player';
 
 export default class MainScene extends Phaser.Scene {
@@ -7,7 +7,6 @@ export default class MainScene extends Phaser.Scene {
   player: Phaser.Physics.Arcade.Sprite;
   groundTiles: Phaser.Tilemaps.Tileset;
   groundLayer: Phaser.Tilemaps.DynamicTilemapLayer;
-  // keyboard: Phaser.Types.Input.Keyboard;
 
   constructor() {
     super('mainScene');
@@ -19,7 +18,7 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 70,
       frameHeight: 70,
     });
-
+    this.cameras.main
     this.load.image('coin', 'assets/coinGold.png');
     this.load.atlas('player', 'assets/player.png', 'assets/player.json');
   }
@@ -28,8 +27,26 @@ export default class MainScene extends Phaser.Scene {
     this.createMap();
     this.configurePlayer();
     this.configurePhysics();
-    // this.configureMovement();
+    this.configureMovement();
     this.configureCamera();
+  }
+
+  private configureMovement() {
+    // const cursors = this.input.keyboard.createCursorKeys();
+
+    // if (cursors.left.isDown) {
+    //   // if the left arrow key is down
+    //   this.player.body.setVelocityX(-200); // move left
+    // } else if (cursors.right.isDown) {
+    //   // if the right arrow key is down
+    //   this.player.body.setVelocityX(200); // move right
+    // }
+    // if (
+    //   (cursors.space.isDown || cursors.up.isDown) &&
+    //   this.player.body.onFloor()
+    // ) {
+    //   this.player.body.setVelocityY(-500); // jump up
+    // }
   }
 
   private createMap() {
@@ -52,13 +69,9 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private configurePlayer() {
-    this.player = new MainPlayer({
-      scene: this,
-      x: 200,
-      y: 30,
-      texture: 'player',
-    });
-
+    this.player = this.physics.add.sprite(200, 200, 'player');
+    this.player.setBounce(0.2);
+    this.player.setCollideWorldBounds(true);
   }
 
   private configurePhysics() {
