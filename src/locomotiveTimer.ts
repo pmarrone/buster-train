@@ -4,6 +4,9 @@ class LocomotiveTimer {
   scene: Phaser.Scene;
   energyMask: Phaser.GameObjects.Sprite;
   timer: Phaser.Time.TimerEvent;
+  maxHealth: integer = 1;
+  currentHealth: integer = 1;
+  healthStep: integer = 0.01;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -13,11 +16,11 @@ class LocomotiveTimer {
   configure() {
     //NO ANDA!!!! LA RE !
     var energyContainer = this.scene.add.sprite(320, 50, "timerContainer");
-    var energyBar = this.scene.add.sprite(energyContainer.x + 46, energyContainer.y, "timeBar");
+    var energyBar = this.scene.add.sprite(energyContainer.x - 200, energyContainer.y, "timeBar");
 
     energyContainer.setScrollFactor(0);
-    energyBar.setOrigin(1, 0.5);
     energyBar.setScrollFactor(0);
+    energyBar.setOrigin(0, 0.5);
 
     /*this.energyMask = this.scene.add.sprite(energyBar.x, energyBar.y, "timeBar");
     this.energyMask.visible = false;
@@ -27,10 +30,11 @@ class LocomotiveTimer {
     this.timer = this.scene.time.addEvent({
         delay: 500,
         callback: function() {
-            var stepWidth = energyBar.displayWidth - (energyBar.displayWidth / 60);
-            energyBar.setScale(0.5,1);
-            //this.energyMask.x -= stepWidth;
-            //energyBar.setW(stepWidth);
+          this.currentHealth -= this.healthStep;
+          if (this.currentHealth < 0) { this.currentHealth = this.maxHealth; }
+          energyBar.setScale(this.currentHealth, 1);
+          //var stepWidth = energyBar.displayWidth - (energyBar.displayWidth / 60);
+          //this.energyMask.x -= stepWidth;
         },
         callbackScope: this,
         loop: true

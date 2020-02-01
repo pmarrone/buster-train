@@ -3,13 +3,14 @@ import CameraManager from './cameraManager';
 import MainPlayer from './player';
 import LocomotiveTimer from './locomotiveTimer';
 import { createLocomotive, dragCallback } from './locomotive';
-import { IObstacle, Obstacle } from './Obstacle';
+import { Obstacle } from './Obstacle';
 
 export default class MainScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
   player: MainPlayer;
   locoTimer: LocomotiveTimer;
-  locomotive: any;
+  cameraManager: CameraManager;
+  locomotive: Phaser.Physics.Arcade.Group;
   mainPlayer: Phaser.Physics.Arcade.Sprite;
   groundTiles: Phaser.Tilemaps.Tileset;
   groundLayer: Phaser.Tilemaps.DynamicTilemapLayer;
@@ -57,13 +58,13 @@ export default class MainScene extends Phaser.Scene {
     this.obstacles = [new Obstacle(this, 'coin', 'saw')];
 
     // constants
-    const spawnDistance = 300; // calculate distance from train
-    const trainPosX = this.locomotive.container.x; // calculate distance from train
+    const spawnDistance = (this.game.config.width as number) * 2; 
+    const train = this.locomotive.getChildren()[4].body as Phaser.Physics.Arcade.Body;
     
     // Select random obstacle
     const randObstacleIdx = Phaser.Math.Between(0, this.obstacles.length - 1);
     const randomObstacle = this.obstacles[randObstacleIdx];
-    const spawnX = trainPosX + spawnDistance;
+    const spawnX = train.x + spawnDistance;
     const spawnY = this.groundLayer.y;
     randomObstacle.render(spawnX, spawnY);
     randomObstacle.setCollision(this.groundLayer);
@@ -137,24 +138,23 @@ export default class MainScene extends Phaser.Scene {
     const tools = [this.coin, this.saw, this.tool];
     this.physics.add.collider(this.groundLayer, this.mainPlayer);
     this.physics.add.collider(this.groundLayer, tools);
-    const locomotiveCollider = this.physics.add.collider(
-      this.locomotive.group,
+    this.physics.add.collider(
+      this.locomotive,
       this.mainPlayer,
       dragCallback
     );
 
     this.physics.add.collider(this.locomotive, tools, dragCallback);
-    // locomotiveCollider.collideCallback = dragCallback;
   }
 
   private configureCamera() {
-    const cameraManager = new CameraManager(this);
-    cameraManager.init();
+    this.cameraManager = new CameraManager(this);
+    this.cameraManager.init();
   }
 
   update(time, delta) {
     this.player.update(this.keys, time, delta);
-
+    this.cameraManager.calculateZoomBetween(this.mainPlayer, this.locomotive);
     //this.physics.moveToObject(this.coin, this.mainPlayer);
   }
 }

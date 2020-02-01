@@ -21,6 +21,15 @@ class CameraManager {
     // set background color, so the sky is not black
     cameras.main.setBackgroundColor('#ccccff');
   }
+
+  calculateZoomBetween(mainPlayer: Phaser.Physics.Arcade.Sprite, locomotive: Phaser.Physics.Arcade.Group) {
+    var train: Phaser.Physics.Arcade.Body;
+    train = locomotive.getChildren()[4].body as Phaser.Physics.Arcade.Body;
+
+    var distance = Phaser.Math.Distance.Between(train.x, train.y, mainPlayer.x, mainPlayer.y);
+    var zoomFactor = Math.max(1 - (distance / 1000), 0.5);
+    this.scene.cameras.main.setZoom(zoomFactor);
+  }
 }
 
 export default CameraManager;
