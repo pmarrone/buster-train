@@ -4,9 +4,11 @@ import MainPlayer from './player';
 
 export default class MainScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
-  player: Phaser.Physics.Arcade.Sprite;
+  //mainPlayer: Phaser.GameObjects.Sprite;
+  mainPlayer: Phaser.Physics.Arcade.Sprite;
   groundTiles: Phaser.Tilemaps.Tileset;
   groundLayer: Phaser.Tilemaps.DynamicTilemapLayer;
+  keys: any;
 
   constructor() {
     super('mainScene');
@@ -23,6 +25,15 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
+    this.keys = {
+      jump: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
+      jump2: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X),
+      fire: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z),
+      left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
+      right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
+      down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
+    };
+
     this.createMap();
     this.configurePlayer();
     this.configurePhysics();
@@ -50,13 +61,19 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private configurePlayer() {
-    this.player = this.physics.add.sprite(200, 200, 'player');
-    this.player.setBounce(0.2);
-    this.player.setCollideWorldBounds(true);
+    this.mainPlayer = this.physics.add.sprite(200, 20, 'player');
+    this.mainPlayer.setBounce(0.2);
+    this.mainPlayer.setCollideWorldBounds(true);
+     /*new MainPlayer({
+      scene: this,
+      x: 200,
+      y: 20,
+      texture: 'player'
+    });*/
   }
 
   private configurePhysics() {
-    this.physics.add.collider(this.groundLayer, this.player);
+    this.physics.add.collider(this.groundLayer, this.mainPlayer);
   }
 
   private configureMovement() {
@@ -87,10 +104,27 @@ export default class MainScene extends Phaser.Scene {
       this.map.widthInPixels,
       this.map.heightInPixels
     );
-    camera.startFollow(this.player);
+    camera.startFollow(this.mainPlayer);
     camera.setBackgroundColor('#ccccff');
     this.cameras.addExisting(camera);
   }
+
+  update(time, delta) { 
+    //this.mainPlayer.update(this.keys, time, delta);
+
+    if (this.keys.left.isDown) {
+      this.mainPlayer.setVelocityX(-100);
+    }
+    
+    if (this.keys.right.isDown) {
+      this.mainPlayer.setVelocityX(100);
+    }
+
+    /* else {
+      this.mainPlayer.setVelocityX(0);
+    }*/
+  }
+
 }
 
 const config: Phaser.Types.Core.GameConfig = {
