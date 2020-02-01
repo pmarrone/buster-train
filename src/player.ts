@@ -27,6 +27,7 @@ class MainPlayer {
     tool: Phaser.Physics.Arcade.Sprite
   ) {
     this.player = player;
+    (this.player.body as Phaser.Physics.Arcade.Body).setMaxVelocity(300, 500);
     this.player.setScale(0.7, 0.7);
 
     this.scene = scene;

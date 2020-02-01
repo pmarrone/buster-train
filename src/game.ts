@@ -57,6 +57,8 @@ export default class MainScene extends Phaser.Scene {
       0,
       0
     );
+    this.physics.world.bounds.width = this.groundLayer.width;
+    this.physics.world.bounds.height = this.groundLayer.height * 2;
     this.groundLayer.setCollisionByExclusion([-1]);
   }
 

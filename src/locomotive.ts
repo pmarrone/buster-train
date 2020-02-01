@@ -35,9 +35,9 @@ export const createLocomotive = (scene: MainScene) => {
 
   rectangles.forEach(rect => group.add(rect));
   container.setScale(2);
-  container.setY(100);
+  container.setY(220);
 
-  group.setVelocity(20, 0);
+  group.setVelocity(50, 0);
 
   return group;
 };
