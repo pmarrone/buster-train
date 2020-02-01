@@ -59,7 +59,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private configurePlayer() {
-    this.mainPlayer = this.physics.add.sprite(200, 20, 'player');
+    this.mainPlayer = this.physics.add.sprite(300, 20, 'player');
     this.mainPlayer.setBounce(0.2);
     this.mainPlayer.setCollideWorldBounds(true);
     this.player = new MainPlayer(this.mainPlayer);
