@@ -2,6 +2,7 @@ import 'phaser';
 import CameraManager from './cameraManager';
 import MainPlayer from './player';
 import { createLocomotive, dragCallback } from './locomotive';
+import { IObstacle, Obstacle } from './Obstacle';
 
 export default class MainScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
@@ -46,6 +47,32 @@ export default class MainScene extends Phaser.Scene {
 
     this.configurePhysics();
     this.configureCamera();
+
+    // Generate some obstacles
+    const obstacles: IObstacle[] = [];
+    const gameWidth = this.game.config.width as number;
+
+    for (let i = 0; i <= 3; i++) {
+      const groundLayerTop = this.groundLayer.y;
+      let spawnStartX = gameWidth;
+      const spawnDistance = 300;
+      if (obstacles.length > 1) {
+        spawnStartX = obstacles[i - 1].image.x;
+      }
+      const spawnX = spawnStartX + spawnDistance;
+      const obstacle = new Obstacle(
+        this,
+        this.physics.add.image(spawnX, groundLayerTop, 'coin'),
+        'saw'
+      );
+      obstacles.push(obstacle);
+    }
+
+    // add collision
+    for (let i = 0; i < obstacles.length; i++) {
+      const obstacle = obstacles[i];
+      obstacle.addCollision(this.groundLayer);
+    }
   }
 
   private createMap() {
