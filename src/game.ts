@@ -111,7 +111,7 @@ export default class MainScene extends Phaser.Scene {
       this.mainPlayer
     );
 
-    this.physics.add.overlap(this.locomotive, tools);
+    this.physics.add.collider(this.locomotive, tools);
     locomotiveCollider.collideCallback = dragCallback;
   }
 
