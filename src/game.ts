@@ -11,6 +11,9 @@ export default class MainScene extends Phaser.Scene {
   groundTiles: Phaser.Tilemaps.Tileset;
   groundLayer: Phaser.Tilemaps.DynamicTilemapLayer;
   keys: any;
+  coin: any;
+  saw: any;
+  tool: any;
 
   constructor() {
     super('mainScene');
@@ -23,6 +26,8 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 70,
     });
     this.load.image('coin', 'assets/coinGold.png');
+    this.load.image('saw', 'assets/saw.png');
+    this.load.image('tool', 'assets/tool.png');
     this.load.atlas('player', 'assets/player.png', 'assets/player.json');
   }
 
@@ -37,25 +42,10 @@ export default class MainScene extends Phaser.Scene {
 
     this.createMap();
     this.configurePlayer();
+    this.locomotive = createLocomotive(this);
+
     this.configurePhysics();
     this.configureCamera();
-
-    const collectItem = (sprite: any, tile: any) => {
-      coinLayer.removeTileAt(tile.x, tile.y); // remove the tile/coin
-      const item = this.add.image(0, 0, 'coin');
-      this.player.collectItem(item);
-      return false;
-    };
-
-    // coin image used as tileset
-    const coinTiles = this.map.addTilesetImage('coin');
-    // add coins as tiles
-    const coinLayer = this.map.createDynamicLayer('Coins', coinTiles, 0, 0);
-
-    coinLayer.setTileIndexCallback(17, collectItem, this); // the coin id is 17
-
-    // when the player overlaps with a tile with index 17, collectCoin will be called
-    this.physics.add.overlap(this.mainPlayer, coinLayer);
   }
 
   private createMap() {
@@ -97,12 +87,24 @@ export default class MainScene extends Phaser.Scene {
       frameRate: 10,
     });
 
-    this.player = new MainPlayer(this.mainPlayer);
-    this.locomotive = createLocomotive(this);
+    this.coin = this.physics.add.image(400, 100, 'coin');
+    this.saw = this.physics.add.image(600, 100, 'saw');
+    this.tool = this.physics.add.image(700, 100, 'tool');
+
+    this.player = new MainPlayer(
+      this,
+      this.mainPlayer,
+      this.coin,
+      this.saw,
+      this.tool
+    );
   }
 
   private configurePhysics() {
     this.physics.add.collider(this.groundLayer, this.mainPlayer);
+    this.physics.add.collider(this.groundLayer, this.coin);
+    this.physics.add.collider(this.groundLayer, this.saw);
+    this.physics.add.collider(this.groundLayer, this.tool);
     const locomotiveCollider = this.physics.add.collider(
       this.locomotive,
       this.mainPlayer
@@ -117,7 +119,8 @@ export default class MainScene extends Phaser.Scene {
 
   update(time, delta) {
     this.player.update(this.keys, time, delta);
-    this.groundLayer.update(this.cameras.main);
+
+    //this.physics.moveToObject(this.coin, this.mainPlayer);
   }
 }
 
