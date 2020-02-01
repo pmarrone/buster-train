@@ -12,34 +12,43 @@ class MainPlayer {
     this.player = player;
   }
 
+  getKeyMapping(pressedKeys: any) : any {
+    return {
+      left: pressedKeys.left.isDown,
+      right: pressedKeys.right.isDown,
+      down: pressedKeys.down.isDown,
+      jump: pressedKeys.jump.isDown,
+      action: pressedKeys.action.isDown
+    };
+  }
+
   update(keys, time, delta) { 
 
-    var input = {
-        left: keys.left.isDown,
-        right: keys.right.isDown,
-        down: keys.down.isDown,
-        jump: keys.jump.isDown,
-        action: keys.action.isDown
-    };
+    var input = this.getKeyMapping(keys);
 
     this.jumpingTimer -= delta;
 
     if (input.left) {
+      this.player.anims.play('walk', true)
+      this.player.flipX = true;
+
       if (this.player.body.velocity.y === 0) {
         this.run(-this.acceleration);
       } else {
         this.run(-this.acceleration / 3);
       }
-      //this.flipX = true;
     } else if (input.right) {
+      this.player.anims.play('walk', true)
+      this.player.flipX = false;
+
       if (this.player.body.velocity.y === 0) {
         this.run(this.acceleration);
       } else {
         this.run(this.acceleration / 3);
       }
-      //this.flipX = false;
     } else if (this.player.body.blocked.down) {
       if (Math.abs(this.player.body.velocity.x) < 20) {
+        this.player.anims.play('idle', true);
         this.player.setVelocityX(0);
         this.run(0);
       } else {

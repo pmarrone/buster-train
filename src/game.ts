@@ -51,17 +51,32 @@ export default class MainScene extends Phaser.Scene {
     this.groundLayer.setCollisionByExclusion([-1]);
     this.physics.world.bounds.width = this.groundLayer.width;
     this.physics.world.bounds.height = this.groundLayer.height;
-    this.load.atlasXML(
+    /*this.load.atlasXML(
       'sprites',
       'assets/spritesheet_complete.png',
       'assets/spritesheet_complete.xml'
-    );
+    );*/
   }
 
   private configurePlayer() {
     this.mainPlayer = this.physics.add.sprite(300, 20, 'player');
     this.mainPlayer.setBounce(0.2);
     this.mainPlayer.setCollideWorldBounds(true);
+    this.mainPlayer.body.setSize(this.mainPlayer.width, this.mainPlayer.height-8);
+
+    this.anims.create({
+        key: 'walk',
+        frames: this.anims.generateFrameNames('player', {prefix: 'p1_walk', start: 1, end: 11, zeroPad: 2}),
+        frameRate: 10,
+        repeat: -1
+    });
+  
+    this.anims.create({
+        key: 'idle',
+        frames: [{key: 'player', frame: 'p1_stand'}],
+        frameRate: 10,
+    });
+
     this.player = new MainPlayer(this.mainPlayer);
   }
 
