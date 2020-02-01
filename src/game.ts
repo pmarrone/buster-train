@@ -16,10 +16,7 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     this.load.tilemapTiledJSON('map', 'assets/map.json');
-    this.load.spritesheet('tiles', 'assets/tiles.png', {
-      frameWidth: 70,
-      frameHeight: 70,
-    });
+    this.load.spritesheet('tiles', 'assets/tiles.png', { frameWidth: 70, frameHeight: 70 });
     this.load.image('coin', 'assets/coinGold.png');
     this.load.atlas('player', 'assets/player.png', 'assets/player.json');
   }
@@ -51,11 +48,6 @@ export default class MainScene extends Phaser.Scene {
     this.groundLayer.setCollisionByExclusion([-1]);
     this.physics.world.bounds.width = this.groundLayer.width;
     this.physics.world.bounds.height = this.groundLayer.height;
-    /*this.load.atlasXML(
-      'sprites',
-      'assets/spritesheet_complete.png',
-      'assets/spritesheet_complete.xml'
-    );*/
   }
 
   private configurePlayer() {
@@ -85,15 +77,14 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private configureCamera() {
-    const camera = new MainCamera(
-      0,
-      0,
-      this.map.widthInPixels,
-      this.map.heightInPixels
-    );
+    this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+    this.cameras.main.startFollow(this.mainPlayer);
+    this.cameras.main.setBackgroundColor('#aaccff');
+
+    /*const camera = new MainCamera(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     camera.startFollow(this.mainPlayer);
-    camera.setBackgroundColor('#ccccff');
-    this.cameras.addExisting(camera);
+    camera.setBackgroundColor('#ccaaff');
+    this.cameras.addExisting(camera);*/
   }
 
   update(time, delta) {
