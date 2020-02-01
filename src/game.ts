@@ -1,5 +1,5 @@
 import 'phaser';
-import MainCamera from './camera';
+import CameraManager from './cameraManager';
 import MainPlayer from './player';
 
 export default class MainScene extends Phaser.Scene {
@@ -30,13 +30,27 @@ export default class MainScene extends Phaser.Scene {
       action: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z),
       left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
       right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
-      down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
+      down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
     };
 
     this.createMap();
     this.configurePlayer();
     this.configurePhysics();
     this.configureCamera();
+
+    // coin image used as tileset
+    const coinTiles = this.map.addTilesetImage('coin');
+    // add coins as tiles
+    const coinLayer = this.map.createDynamicLayer('Coins', coinTiles, 0, 0);
+
+    coinLayer.setTileIndexCallback(17, collectItem, this); // the coin id is 17
+    // when the player overlaps with a tile with index 17, collectCoin will be called    
+    this.physics.add.overlap(this.mainPlayer, coinLayer);
+
+    function collectItem(sprite: any, tile: any) {
+      coinLayer.removeTileAt(tile.x, tile.y); // remove the tile/coin
+      return false;
+    }
   }
 
   private createMap() {
@@ -62,19 +76,27 @@ export default class MainScene extends Phaser.Scene {
     this.mainPlayer = this.physics.add.sprite(300, 20, 'player');
     this.mainPlayer.setBounce(0.2);
     this.mainPlayer.setCollideWorldBounds(true);
-    this.mainPlayer.body.setSize(this.mainPlayer.width, this.mainPlayer.height-8);
+    this.mainPlayer.body.setSize(
+      this.mainPlayer.width,
+      this.mainPlayer.height - 8
+    );
 
     this.anims.create({
-        key: 'walk',
-        frames: this.anims.generateFrameNames('player', {prefix: 'p1_walk', start: 1, end: 11, zeroPad: 2}),
-        frameRate: 10,
-        repeat: -1
+      key: 'walk',
+      frames: this.anims.generateFrameNames('player', {
+        prefix: 'p1_walk',
+        start: 1,
+        end: 11,
+        zeroPad: 2,
+      }),
+      frameRate: 10,
+      repeat: -1,
     });
-  
+
     this.anims.create({
-        key: 'idle',
-        frames: [{key: 'player', frame: 'p1_stand'}],
-        frameRate: 10,
+      key: 'idle',
+      frames: [{ key: 'player', frame: 'p1_stand' }],
+      frameRate: 10,
     });
 
     this.player = new MainPlayer(this.mainPlayer);
@@ -85,21 +107,13 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private configureCamera() {
-    const camera = new MainCamera(
-      0,
-      0,
-      this.map.widthInPixels,
-      this.map.heightInPixels
-    );
-    camera.startFollow(this.mainPlayer);
-    camera.setBackgroundColor('#ccccff');
-    this.cameras.addExisting(camera);
+    const cameraManager = new CameraManager(this);
+    cameraManager.init();
   }
 
   update(time, delta) {
     this.player.update(this.keys, time, delta);
   }
-
 }
 
 const config: Phaser.Types.Core.GameConfig = {
