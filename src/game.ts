@@ -35,19 +35,23 @@ export default class MainScene extends Phaser.Scene {
     this.configurePhysics();
     this.configureCamera();
 
+    const collectItem = (sprite: any, tile: any) => {
+      coinLayer.removeTileAt(tile.x, tile.y); // remove the tile/coin
+      const item = this.add.image(0, 0, 'coin');
+      this.player.collectItem(item);      
+      return false;
+    }
+
     // coin image used as tileset
     const coinTiles = this.map.addTilesetImage('coin');
     // add coins as tiles
     const coinLayer = this.map.createDynamicLayer('Coins', coinTiles, 0, 0);
 
     coinLayer.setTileIndexCallback(17, collectItem, this); // the coin id is 17
+
     // when the player overlaps with a tile with index 17, collectCoin will be called    
     this.physics.add.overlap(this.mainPlayer, coinLayer);
-
-    function collectItem(sprite: any, tile: any) {
-      coinLayer.removeTileAt(tile.x, tile.y); // remove the tile/coin
-      return false;
-    }
+    
   }
 
   private createMap() {
@@ -109,7 +113,7 @@ export default class MainScene extends Phaser.Scene {
 }
 
 const config: Phaser.Types.Core.GameConfig = {
-  type: Phaser.AUTO,
+  type: Phaser.CANVAS,
   backgroundColor: '#125555',
   width: 800,
   height: 600,

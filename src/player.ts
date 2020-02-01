@@ -83,6 +83,14 @@ class MainPlayer {
   run(vel) {
     this.player.setAccelerationX(vel);
   }
+
+  collectItem(item: Phaser.GameObjects.Image) {
+    const playerCenterX = this.player.x + (this.player.width / 2);
+    const playerCenterY = this.player.y + (this.player.height / 2);
+    item.setPosition(playerCenterX, playerCenterY);
+    return false;
+  }
+  
 }
 
 export default MainPlayer;
