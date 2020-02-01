@@ -37,7 +37,7 @@ export default class MainScene extends Phaser.Scene {
     this.createMap();
     this.configurePlayer();
     this.configurePhysics();
-    this.configureMovement();
+    //this.configureMovement();
     this.configureCamera();
   }
 
@@ -76,7 +76,7 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.collider(this.groundLayer, this.mainPlayer);
   }
 
-  private configureMovement() {
+  /*private configureMovement() {
     const cursors = this.input.keyboard.createCursorKeys();
 
     if (cursors.left.isDown) {
@@ -95,7 +95,7 @@ export default class MainScene extends Phaser.Scene {
     if (cursors.up.isDown && this.player.body.touching.down) {
       this.player.setVelocityY(-330);
     }
-  }
+  }*/
 
   private configureCamera() {
     const camera = new MainCamera(
