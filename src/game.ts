@@ -89,9 +89,12 @@ export default class MainScene extends Phaser.Scene {
       frameRate: 10,
     });
 
-    this.coin = this.physics.add.image(400, 100, 'coin');
-    this.saw = this.physics.add.image(900, 100, 'saw').setName('saw');
-    this.tool = this.physics.add.image(700, 100, 'tool');
+    this.coin = this.physics.add.image(400, 100, 'coin').setDragX(100);
+    this.saw = this.physics.add
+      .image(900, 100, 'saw')
+      .setName('saw')
+      .setDragX(100);
+    this.tool = this.physics.add.image(700, 100, 'tool').setDragX(100);
 
     this.player = new MainPlayer(
       this,
