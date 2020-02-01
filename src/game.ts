@@ -3,7 +3,7 @@ import CameraManager from './cameraManager';
 import MainPlayer from './player';
 import LocomotiveTimer from './locomotiveTimer';
 import { createLocomotive, dragCallback } from './locomotive';
-import { IObstacle, Obstacle } from './Obstacle';
+import { Obstacle } from './Obstacle';
 
 export default class MainScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
@@ -18,6 +18,7 @@ export default class MainScene extends Phaser.Scene {
   coin: any;
   saw: any;
   tool: any;
+  obstacles: Obstacle[];
 
   constructor() {
     super('mainScene');
@@ -52,32 +53,22 @@ export default class MainScene extends Phaser.Scene {
 
     this.configurePhysics();
     this.configureCamera();
+    
+    // init obstacles
+    this.obstacles = [new Obstacle(this, 'coin', 'saw')];
 
-    // Generate some obstacles
-    const obstacles: IObstacle[] = [];
-    const gameWidth = this.game.config.width as number;
+    // constants
+    const spawnDistance = (this.game.config.width as number) * 2; 
+    const train = this.locomotive.getChildren()[4].body as Phaser.Physics.Arcade.Body;
+    
+    // Select random obstacle
+    const randObstacleIdx = Phaser.Math.Between(0, this.obstacles.length - 1);
+    const randomObstacle = this.obstacles[randObstacleIdx];
+    const spawnX = train.x + spawnDistance;
+    const spawnY = this.groundLayer.y;
+    randomObstacle.render(spawnX, spawnY);
+    randomObstacle.setCollision(this.groundLayer);
 
-    for (let i = 0; i <= 3; i++) {
-      const groundLayerTop = this.groundLayer.y;
-      let spawnStartX = gameWidth;
-      const spawnDistance = 300;
-      if (obstacles.length > 1) {
-        spawnStartX = obstacles[i - 1].image.x;
-      }
-      const spawnX = spawnStartX + spawnDistance;
-      const obstacle = new Obstacle(
-        this,
-        this.physics.add.image(spawnX, groundLayerTop, 'coin'),
-        'saw'
-      );
-      obstacles.push(obstacle);
-    }
-
-    // add collision
-    for (let i = 0; i < obstacles.length; i++) {
-      const obstacle = obstacles[i];
-      obstacle.addCollision(this.groundLayer);
-    }
     this.createTimer();
   }
 
@@ -147,14 +138,13 @@ export default class MainScene extends Phaser.Scene {
     const tools = [this.coin, this.saw, this.tool];
     this.physics.add.collider(this.groundLayer, this.mainPlayer);
     this.physics.add.collider(this.groundLayer, tools);
-    const locomotiveCollider = this.physics.add.collider(
+    this.physics.add.collider(
       this.locomotive,
       this.mainPlayer,
       dragCallback
     );
 
     this.physics.add.collider(this.locomotive, tools, dragCallback);
-    // locomotiveCollider.collideCallback = dragCallback;
   }
 
   private configureCamera() {
@@ -165,6 +155,7 @@ export default class MainScene extends Phaser.Scene {
   update(time, delta) {
     this.player.update(this.keys, time, delta);
     this.cameraManager.calculateZoomBetween(this.mainPlayer, this.locomotive);
+    //this.physics.moveToObject(this.coin, this.mainPlayer);
   }
 }
 
