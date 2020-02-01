@@ -16,7 +16,7 @@ export const dragCallback: ArcadePhysicsCallback = (dragged, drags) => {
     draggedBody.touching.down &&
     Math.abs(draggedBody.bottom - dragsbody.top) < 2
   ) {
-    draggedBody.x += dragsbody.deltaXFinal() * 2; // Magic number 2!;
+    draggedBody.x += dragsbody.deltaX(); // Magic number 2!;
   }
 };
 
@@ -25,7 +25,10 @@ export const createLocomotive = (scene: MainScene) => {
   const rectangles = [
     scene.add.rectangle(0, 30, 85, 10, 0x6666ff).setOrigin(0, 0),
     scene.add.rectangle(-50, 110, 170, 10, 0x6666ff).setOrigin(0, 0),
-    scene.add.rectangle(105, 70, 65, 50, 0x6666ff).setOrigin(0, 0),
+    scene.add
+      .rectangle(105, 70, 65, 50, 0x6666ff)
+      .setName('Front')
+      .setOrigin(0, 0),
     scene.add.rectangle(80, 30, 30, 80, 0x6666ff).setOrigin(0, 0),
   ];
   container.add(rectangles);
@@ -37,8 +40,9 @@ export const createLocomotive = (scene: MainScene) => {
   });
 
   rectangles.forEach(rect => group.add(rect));
-  container.setScale(2);
-  container.setY(220);
+
+  container.setScale(1);
+  container.setY(300);
 
   group.setVelocity(50, 0);
 

@@ -90,7 +90,7 @@ export default class MainScene extends Phaser.Scene {
     });
 
     this.coin = this.physics.add.image(400, 100, 'coin');
-    this.saw = this.physics.add.image(600, 100, 'saw');
+    this.saw = this.physics.add.image(900, 100, 'saw').setName('saw');
     this.tool = this.physics.add.image(700, 100, 'tool');
 
     this.player = new MainPlayer(
@@ -103,14 +103,15 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private configurePhysics() {
+    const tools = [this.coin, this.saw, this.tool];
     this.physics.add.collider(this.groundLayer, this.mainPlayer);
-    this.physics.add.collider(this.groundLayer, this.coin);
-    this.physics.add.collider(this.groundLayer, this.saw);
-    this.physics.add.collider(this.groundLayer, this.tool);
+    this.physics.add.collider(this.groundLayer, tools);
     const locomotiveCollider = this.physics.add.collider(
       this.locomotive,
       this.mainPlayer
     );
+
+    this.physics.add.overlap(this.locomotive, tools);
     locomotiveCollider.collideCallback = dragCallback;
   }
 
@@ -135,7 +136,8 @@ const config: Phaser.Types.Core.GameConfig = {
     default: 'arcade',
     arcade: {
       gravity: { y: 800 },
-      debug: false,
+      debug: true,
+      debugBodyColor: 0x100,
     },
   },
   scene: MainScene,
