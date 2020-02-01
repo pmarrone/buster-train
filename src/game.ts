@@ -16,10 +16,7 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     this.load.tilemapTiledJSON('map', 'assets/map.json');
-    this.load.spritesheet('tiles', 'assets/tiles.png', {
-      frameWidth: 70,
-      frameHeight: 70,
-    });
+    this.load.spritesheet('tiles', 'assets/tiles.png', { frameWidth: 70, frameHeight: 70 });
     this.load.image('coin', 'assets/coinGold.png');
     this.load.atlas('player', 'assets/player.png', 'assets/player.json');
   }
@@ -65,11 +62,6 @@ export default class MainScene extends Phaser.Scene {
     this.groundLayer.setCollisionByExclusion([-1]);
     this.physics.world.bounds.width = this.groundLayer.width;
     this.physics.world.bounds.height = this.groundLayer.height;
-    /*this.load.atlasXML(
-      'sprites',
-      'assets/spritesheet_complete.png',
-      'assets/spritesheet_complete.xml'
-    );*/
   }
 
   private configurePlayer() {
