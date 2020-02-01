@@ -2,20 +2,37 @@ import 'phaser';
 
 class MainPlayer {
   player: Phaser.Physics.Arcade.Sprite;
+
   coin: Phaser.Physics.Arcade.Sprite;
+  saw: Phaser.Physics.Arcade.Sprite;
+  tool: Phaser.Physics.Arcade.Sprite;
+  
+  scene: Phaser.Scene;
   acceleration: integer = 2400;
   isJumping: boolean;
   jumpungTimerReset: integer = 300;
   jumpingTimer: integer = 0;
   jumpHeight: integer = 400;
   holdingTool: boolean = false;
+  
+  collider: any;
+  isColliding: boolean = false;
+  grabbing: Phaser.Physics.Arcade.Sprite;
 
-  constructor(player: Phaser.Physics.Arcade.Sprite, 
-              coin: Phaser.Physics.Arcade.Sprite) {
+  constructor(
+    scene: Phaser.Scene,
+    player: Phaser.Physics.Arcade.Sprite, 
+    coin: Phaser.Physics.Arcade.Sprite,
+    saw: Phaser.Physics.Arcade.Sprite,
+    tool: Phaser.Physics.Arcade.Sprite) {
+
     this.player = player;
     this.player.setScale(0.7, 0.7);
 
+    this.scene = scene;
     this.coin = coin;
+    this.saw = saw;
+    this.tool = tool;
   }
 
   getKeyMapping(pressedKeys: any) : any {
@@ -74,10 +91,26 @@ class MainPlayer {
       }
     }
 
-    if (input.action) {
-      this.coin.setX(this.player.x);
-      this.coin.setY(this.player.y);
+    this.scene.physics.overlap(this.player, this.coin, this.setColliding, null, this);
+    this.scene.physics.overlap(this.player, this.saw, this.setColliding, null, this);
+    this.scene.physics.overlap(this.player, this.tool, this.setColliding, null, this);
+
+    if (input.action && this.holdingTool) {
+      this.grabbing.setX(this.player.x);
+      this.grabbing.setY(this.player.y);
+    } else if (input.action && this.isColliding) {
+      this.grabbing = this.collider;
+      this.holdingTool = true;
+    } else {
+      this.isColliding = false;
+      this.holdingTool = false;
+      this.grabbing = null;
     }
+  }
+
+  setColliding(obj1, obj2) {
+    this.collider = obj2;
+    this.isColliding = true;
   }
 
   jump() {

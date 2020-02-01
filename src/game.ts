@@ -10,6 +10,8 @@ export default class MainScene extends Phaser.Scene {
   groundLayer: Phaser.Tilemaps.DynamicTilemapLayer;
   keys: any;
   coin: any;
+  saw: any;
+  tool: any;
 
   constructor() {
     super('mainScene');
@@ -19,6 +21,8 @@ export default class MainScene extends Phaser.Scene {
     this.load.tilemapTiledJSON('map', 'assets/map.json');
     this.load.spritesheet('tiles', 'assets/tiles.png', { frameWidth: 70, frameHeight: 70 });
     this.load.image('coin', 'assets/coinGold.png');
+    this.load.image('saw', 'assets/saw.png');
+    this.load.image('tool', 'assets/tool.png');
     this.load.atlas('player', 'assets/player.png', 'assets/player.json');
   }
 
@@ -76,13 +80,17 @@ export default class MainScene extends Phaser.Scene {
     });
 
     this.coin = this.physics.add.image(400, 100, 'coin');
+    this.saw = this.physics.add.image(600, 100, 'saw');
+    this.tool = this.physics.add.image(700, 100, 'tool');
 
-    this.player = new MainPlayer(this.mainPlayer, this.coin);
+    this.player = new MainPlayer(this, this.mainPlayer, this.coin, this.saw, this.tool);
   }
 
   private configurePhysics() {
     this.physics.add.collider(this.groundLayer, this.mainPlayer);
     this.physics.add.collider(this.groundLayer, this.coin);
+    this.physics.add.collider(this.groundLayer, this.saw);
+    this.physics.add.collider(this.groundLayer, this.tool);
   }
 
   private configureCamera() {
