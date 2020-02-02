@@ -53,21 +53,25 @@ export default class MainScene extends Phaser.Scene {
 
     this.configurePhysics();
     this.configureCamera();
-    
+
     // init obstacles
     this.obstacles = [new Obstacle(this, 'coin', 'saw')];
 
     // constants
-    const spawnDistance = (this.game.config.width as number) * 2; 
-    const train = this.locomotive.getChildren()[4].body as Phaser.Physics.Arcade.Body;
-    
-    // Select random obstacle
+    const spawnDistance = (this.game.config.width as number) * 2;
+    const train = this.locomotive.getChildren()[4]
+      .body as Phaser.Physics.Arcade.Body;
+
+    // render random obstacle
     const randObstacleIdx = Phaser.Math.Between(0, this.obstacles.length - 1);
-    const randomObstacle = this.obstacles[randObstacleIdx];
+    const obstacle = this.obstacles[randObstacleIdx];
     const spawnX = train.x + spawnDistance;
     const spawnY = this.groundLayer.y;
-    randomObstacle.render(spawnX, spawnY);
-    randomObstacle.setCollision(this.groundLayer);
+    obstacle.render(spawnX, spawnY);
+    obstacle.setCollision(this.groundLayer);
+
+    // player collide with obstacles
+    this.player.setObstacleOverlap(this.obstacles.map(obs => obs.image));
 
     this.createTimer();
   }
@@ -125,24 +129,15 @@ export default class MainScene extends Phaser.Scene {
       .setScale(0.5, 0.5);
     this.tool = this.physics.add.image(700, 100, 'tool').setDragX(100);
 
-    this.player = new MainPlayer(
-      this,
-      this.mainPlayer,
-      this.coin,
-      this.saw,
-      this.tool
-    );
+    this.player = new MainPlayer(this, this.mainPlayer);
+    this.player.setToolsOverlap([this.coin, this.saw, this.tool]);
   }
 
   private configurePhysics() {
     const tools = [this.coin, this.saw, this.tool];
     this.physics.add.collider(this.groundLayer, this.mainPlayer);
     this.physics.add.collider(this.groundLayer, tools);
-    this.physics.add.collider(
-      this.locomotive,
-      this.mainPlayer,
-      dragCallback
-    );
+    this.physics.add.collider(this.locomotive, this.mainPlayer, dragCallback);
 
     this.physics.add.collider(this.locomotive, tools, dragCallback);
   }

@@ -21,23 +21,27 @@ class MainPlayer {
 
   constructor(
     scene: Phaser.Scene,
-    player: Phaser.Physics.Arcade.Sprite,
-    coin: Phaser.Physics.Arcade.Sprite,
-    saw: Phaser.Physics.Arcade.Sprite,
-    tool: Phaser.Physics.Arcade.Sprite
+    player: Phaser.Physics.Arcade.Sprite
   ) {
     this.player = player;
     (this.player.body as Phaser.Physics.Arcade.Body).setMaxVelocity(300, 500);
     this.player.setScale(0.7, 0.7);
 
     this.scene = scene;
-    this.coin = coin;
-    this.saw = saw;
-    this.tool = tool;
+  }
 
+  setToolsOverlap(layers: Phaser.GameObjects.GameObject[]) {
+    this.setOverlap(layers);
+  }
+
+  setObstacleOverlap(layers: Phaser.GameObjects.GameObject[]) {
+    this.setOverlap(layers);
+  }
+
+  setOverlap(layers: Phaser.GameObjects.GameObject[]) {
     this.scene.physics.add.overlap(
       this.player,
-      [this.coin, this.saw, this.tool],
+      layers,
       this.setColliding,
       null,
       this

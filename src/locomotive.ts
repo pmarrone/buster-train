@@ -60,8 +60,5 @@ export const createLocomotive = (scene: MainScene) => {
 
   group.setVelocity(50, 0);
 
-  return {
-    container,
-    group,
-  };
+  return group;
 };
