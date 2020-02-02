@@ -27,7 +27,7 @@ class CameraManager {
     train = locomotive.getChildren()[4].body as Phaser.Physics.Arcade.Body;
 
     var distance = Phaser.Math.Distance.Between(train.x, train.y, mainPlayer.x, mainPlayer.y);
-    var zoomFactor = Math.max(1 - (distance / 1000), 0.5);
+    var zoomFactor = Math.max(1 - (distance / 1000), 0.4);
     this.scene.cameras.main.setZoom(zoomFactor);
   }
 }
